@@ -151,10 +151,10 @@ function FormCreation({ schema, setSchema }: IFormCreation) {
                 </Select>
               </td>
               <td>
-                {value.type === SELECT || value.type === MULTISELECT ? (
+                {(value.type === SELECT || value.type === MULTISELECT) && (
                   <List
                     width={"220px"}
-                    component={<button className="btn">Add Option</button>}
+                    component={<button className="btn">Add</button>}
                   >
                     <Input
                       type="text"
@@ -176,8 +176,6 @@ function FormCreation({ schema, setSchema }: IFormCreation) {
                       ))}
                     </OptionContainer>
                   </List>
-                ) : (
-                  "NA"
                 )}
               </td>
               <td>

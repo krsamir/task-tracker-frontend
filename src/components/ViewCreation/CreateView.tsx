@@ -1,7 +1,8 @@
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 import styled from "styled-components";
 import Dialog from "../Modal/Dialog";
-import { SELECT, TEXT } from "./constants";
+import { TEXT } from "./constants";
 import FormCreation from "./FormCreation";
 
 const AddButton = styled.span`
@@ -51,15 +52,15 @@ export const FIELD = Object.freeze({
 });
 
 function CreateView() {
-  const [show, setShow] = useState(true);
+  const [show, setShow] = useState(false);
 
   const [schema, setSchema] = useState<ISchema[]>([
     {
       [FIELD.NAME]: "",
-      [FIELD.TYPE]: SELECT,
+      [FIELD.TYPE]: TEXT,
       [FIELD.VALUE]: "",
       [FIELD.SHOW]: true,
-      [FIELD.OPTIONS]: ["New", "In-Progress"],
+      [FIELD.OPTIONS]: [],
     },
   ]);
   const handleClose = () => {
@@ -90,7 +91,11 @@ function CreateView() {
   };
 
   const saveSchema = () => {
-    console.log(schema);
+    if (schema.map((value) => value.name).includes("")) {
+      toast.error(`NAME CANNOT BE EMPTY.`);
+    } else {
+      console.log(schema);
+    }
   };
 
   return (
