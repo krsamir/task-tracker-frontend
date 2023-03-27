@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { FIELD, ISchema } from "./CreateView";
 import styled from "styled-components";
 import { CHECKBOX, FORM_TYPES, MULTISELECT, SELECT, TEXT } from "./constants";
@@ -74,45 +74,59 @@ interface IFormCreation {
 }
 
 function FormCreation({ schema, setSchema }: IFormCreation) {
-  const handleDelete = (index: number) => {
-    const val = [...schema];
-    val.splice(index, 1);
-    setSchema(val);
-  };
-  const handleChange = (e: any, index: number) => {
-    const target = e.target;
-    const val = [...schema];
-    if (target.name === FIELD.SHOW) {
-      // @ts-ignore
-      val[index][target.name] = target.checked;
-    } else {
-      // @ts-ignore
-      val[index][target.name] = target.value;
-    }
-    setSchema(val);
-  };
+  const handleDelete = useCallback(
+    (index: number) => {
+      const val = [...schema];
+      val.splice(index, 1);
+      setSchema(val);
+    },
+    [schema, setSchema]
+  );
+
+  const handleChange = useCallback(
+    (e: any, index: number) => {
+      const target = e.target;
+      const val = [...schema];
+      if (target.name === FIELD.SHOW) {
+        // @ts-ignore
+        val[index][target.name] = target.checked;
+      } else {
+        // @ts-ignore
+        val[index][target.name] = target.value;
+      }
+      setSchema(val);
+    },
+    [schema, setSchema, FIELD]
+  );
 
   const [selectionInput, setSelectionInput] = useState<string>("");
 
-  const handleKeyPress = (
-    e: React.KeyboardEvent<HTMLInputElement>,
-    index: number
-  ) => {
-    if (e.key === "Enter" && selectionInput.length) {
-      handleToastAdd(index);
-    }
-  };
-  const handleToastAdd = (index: number) => {
-    const val = [...schema];
-    val[index].options = [...val[index].options, selectionInput];
-    setSchema(val);
-    setSelectionInput("");
-  };
-  const handleToastRemove = (index: number, toastIndex: number) => {
-    const val = [...schema];
-    val[index].options.splice(toastIndex, 1);
-    setSchema(val);
-  };
+  const handleToastAdd = useCallback(
+    (index: number) => {
+      const val = [...schema];
+      val[index].options = [...val[index].options, selectionInput];
+      setSchema(val);
+      setSelectionInput("");
+    },
+    [schema, selectionInput, setSelectionInput, setSchema]
+  );
+
+  const handleKeyPress = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
+      if (e.key === "Enter" && selectionInput.length) {
+        handleToastAdd(index);
+      }
+    },
+    [handleToastAdd, selectionInput]
+  );
+  const handleToastRemove = useCallback(
+    (index: number, toastIndex: number) => {
+      const val = [...schema];
+      val[index].options.splice(toastIndex, 1);
+      setSchema(val);
+    },
+    [schema, setSchema]
+  );
   return (
     <>
       <table>

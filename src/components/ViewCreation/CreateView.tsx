@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
+import { SCHEMA_NAME, STATUS } from "../constants";
+import { useCreateTemplate } from "../hooks/apiHooks";
+import Loader from "../Loader";
 import Dialog from "../Modal/Dialog";
 import { TEXT } from "./constants";
 import FormCreation from "./FormCreation";
@@ -32,7 +35,7 @@ const Flex = styled.div`
   flex: 1;
 `;
 interface ICreateView {
-  data: any;
+  isLoading: boolean;
 }
 
 export interface ISchema {
@@ -51,7 +54,8 @@ export const FIELD = Object.freeze({
   VALUE: "value",
 });
 
-function CreateView() {
+function CreateView({ isLoading }: ICreateView) {
+  const { createSchema } = useCreateTemplate();
   const [show, setShow] = useState(false);
 
   const [schema, setSchema] = useState<ISchema[]>([
@@ -63,7 +67,7 @@ function CreateView() {
       [FIELD.OPTIONS]: [],
     },
   ]);
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setSchema([
       {
         [FIELD.NAME]: "",
@@ -74,9 +78,9 @@ function CreateView() {
       },
     ]);
     setShow(false);
-  };
+  }, [setSchema, setShow, FIELD]);
 
-  const addItem = () => {
+  const addItem = useCallback(() => {
     const val = [...schema];
     setSchema([
       ...val,
@@ -88,20 +92,29 @@ function CreateView() {
         [FIELD.OPTIONS]: [],
       },
     ]);
-  };
+  }, [schema, setSchema, FIELD]);
 
-  const saveSchema = () => {
+  const saveSchema = useCallback(() => {
     if (schema.map((value) => value.name).includes("")) {
       toast.error(`NAME CANNOT BE EMPTY.`);
     } else {
-      console.log(schema);
+      createSchema(
+        { name: SCHEMA_NAME, template: schema },
+        {
+          onSuccess(data) {
+            if (data.data.status === STATUS.SUCCESS_1) {
+              setShow(false);
+            }
+          },
+        }
+      );
     }
-  };
+  }, [schema, toast, createSchema, STATUS]);
 
   return (
     <>
       <AddButton title="Create a view" onClick={() => setShow(true)}>
-        +
+        {isLoading ? <Loader show={true} /> : "+"}
       </AddButton>
       <Dialog
         show={show}

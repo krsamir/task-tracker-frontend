@@ -7,3 +7,5 @@ export const STATUS = Object.freeze({
   SUCCESS_1: 1,
   DUPLICATE_2: 2,
 });
+
+export const SCHEMA_NAME = `My view`;
