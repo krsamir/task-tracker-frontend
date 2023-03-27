@@ -6,6 +6,7 @@ export const TIME = "time";
 export const URL = "url";
 export const SELECT = "select";
 export const MULTISELECT = "multiselect";
+export const TEXT_AREA = "textarea";
 
 export const capitalize = (text: string) =>
   text.charAt(0).toUpperCase() + text.slice(1).replace("-local", "");
@@ -41,5 +42,9 @@ export const FORM_TYPES = [
   {
     id: 7,
     value: MULTISELECT,
+  },
+  {
+    id: 8,
+    value: TEXT_AREA,
   },
 ];

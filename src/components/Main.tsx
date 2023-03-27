@@ -14,7 +14,7 @@ function Main() {
   if (value.length === 0) {
     return <CreateView isLoading={isLoading} />;
   } else {
-    return <View />;
+    return <View data={value} />;
   }
 }
 
